@@ -1,0 +1,123 @@
+# Copyright (C) 2021 SuperAdmin
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+#
+# Generic
+#
+
+# Module label 'ModuleMultiProdOfName'
+ModuleMultiProdOfName = Órdenes de fabricación Múltiple
+# Module description 'ModuleMultiProdOfDesc'
+ModuleMultiProdOfDesc = Módulo de órdenes de fabricación para múltiples items.
+New_MuPrOf =  Nueva orden de fabricación
+List_MuPrOf = Listado
+MultiProdOf = Órd. Fab. Múltiple
+MuPrOf = Orden de fabricación múltiple
+MuPrOfs = órdenes de fabricación múltiples
+Operator = Operador
+Temper = Atemperador
+Water_circulates = Agua circula
+Rack_in_temperature = Rack en temperatura
+Ejector_safety = Seguridad expulsor
+Mold_cleaning = Limpieza de molde
+Dater = Fechador
+numermolde = Nº Molde
+Signature = Firma
+Notes = Notas
+ConfirmDeleteMuPrOf = ¿Está seguro de querer eliminar esta lista de materiales?
+DeleteMuPrOf = Eliminar Orden de Fabricación
+ConfirmCloneMuPrOf = ¿Está seguro de querer clonar la lista de materiales %s?
+ConfirmValidateMuPrOf = ¿Está seguro de querer validar esta orden de fabricación?
+CreateOrder = Crear pedido
+Please_add_a_client = Por favor agregue un cliente a la OF
+ErrorCreateOrder = ERROR CREANDO PEDIDO, FAVOR CONSULTAR CON SOPORTE
+ErrorCreateOrderNoLines = ERROR CREANDO PEDIDO, LA OF NO TIENE LINEAS PRODUCIDAS
+
+#Tabs
+ManufacturingOrderMult = Órd. Fab. Múltiple
+quality_of_the_piece = Calidad de la pieza
+Orders = Pedidos
+
+#Production tab
+AddNewProductionLines = Agregar nueva línea para producir
+Production = Producción
+Consumption = Consumo
+PlisSelectProdutToProduce = Por favor seleccione el Bom a consumir y/o producir
+PlisSelectProdutToAddConsume = Por favor seleccione el Bom para agregar consumibles
+Re-Open = ReAbrir
+
+#Quality Tab
+appearance = Aspecto
+fill = Llenado 
+shovels = Palas
+accommodation = Alojamientos
+curvature = Curvatura
+size = Tamaño
+rack = Rack
+temper = Atemperador
+material = Material
+parameters = Parámetros
+box = Caja
+notes = Notas
+date_q = Fecha
+hour_q = Hora
+
+#Orders Tab
+GenerateOrdesProduction = Generar pedidos de producción
+QtyInOrder = Cant. en pedido
+QtyPending = Cant. pendiente de pedido
+Plis_select_lines_to_order = Por favor seleccione l\u00edneas para el pedido o coloque unidades v\u00e1lidas
+Marked_lines_exceed = Las lineas marcadas rebasan las unidades en pedidos.
+Marked_lines_exceed_reload = Las lineas marcadas rebasan las unidades en pedidos. Favor actualice la ventana para ver los cambios!!
+Error_contact_support = Se ha presentado un error,<br>Favor contacte con soporte
+Error_try_again = Se ha presentado un error en la conexi\u00f3n. Favor intente nuevamente
+Por_favor_marque = Por favor marque y llene todas las opciones y campos necesarios!!
+
+#Rigths
+Read_objects_of_MultiProdOf = Leer orden de fabricación (OFM)
+Create/Update_objects_of_MultiProdOf = Crear/modificar orden de fabricación (OFM)
+Delete_objects_of_MultiProdOf = Eliminar orden de fabricación (OFM)
+Create/Update/Delete/Quality_objects_of_MultiProdOf = Crear/Actualizar/Eliminar calidad de la pieza (OFM)
+
+#
+# Admin page
+#
+MultiProdOfSetup = MultiProdOf setup
+Settings = Settings
+MultiProdOfSetupPage = MultiProdOf setup page
+MULTIPRODOF_MYPARAM1 = My param 1
+MULTIPRODOF_MYPARAM1Tooltip = My param 1 tooltip
+MULTIPRODOF_MYPARAM2=My param 2
+MULTIPRODOF_MYPARAM2Tooltip=My param 2 tooltip
+
+
+#
+# About page
+#
+About = About
+MultiProdOfAbout = About MultiProdOf
+MultiProdOfAboutPage = MultiProdOf about page
+Description of the module... = Módulo de órdenes de fabricación que permite la producción de varios productos en el mismo documento, el proceso al final lleva los items producidos a un pedido de cliente.
+
+#
+# Sample page
+#
+MyPageName = My page name
+
+#
+# Sample widget
+#
+MyWidget = Órden de Fabricación múltiple
+MyWidgetDescription = Módulo de órdenes de fabricación que permite la producción de varios productos en el mismo documento, el proceso al final lleva los items producidos a un pedido de cliente.

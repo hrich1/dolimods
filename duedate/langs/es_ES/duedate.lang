@@ -1,0 +1,4 @@
+# Dolibarr language file - es_ES - duedate
+CHARSET=UTF-8
+DueDate=Fecha de Vencimiento
+Module501550Name=Fecha de Vencimiento

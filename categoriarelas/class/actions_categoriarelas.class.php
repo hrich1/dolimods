@@ -105,7 +105,10 @@ class ActionsCategoriaRelas
 			// fetch optionals attributes and labels
 			$extrafieldsp->fetch_name_optionals_label($objprod->table_element);
 			$fieldsp =  $objprod->showOptionals($extrafieldsp, 'create', '');
-
+			
+			//echo "<pre>";
+			//print_r($extrafieldsp);
+			//exit;
 			$fieldsp = str_replace("$(document).ready(function () {", "$(\"#campspro\").on('click', function() {", $fieldsp);
 
 			$fieldsp = str_replace("</select>", "</select><br/><br/>", $fieldsp);
@@ -188,7 +191,55 @@ class ActionsCategoriaRelas
 
 							});
 					}
+					Product_extra_vals = function()
+					{
+						
+						$.ajax({
+							// http method
+							type: "POST",
+							url: "../custom/categoriarelas/ajax/categoriarelas.php",
+							data : {
+								action: "Product_extra_vals",
+								id : $("#idprod").val()
+							},
+							success: function (data, status, xhr) {
+								var doc = JSON.parse(data);
+								console.log(doc);
+								if(doc.Res=="Success")
+								{
+									if(typeof doc.V != "undefined")
+									{
+										var pas = 0;
+										//HiddenAll();
+										for(lin in doc.V)
+										{
+											if($("#"+lin).length > 0)
+											{
+												$("#"+lin).val(doc.V[lin]);
+											}
+											pas++;
+										}
+										RefreshExtras();	
+									}
+								}
+								
+								
+							},
+							error: function (jqXhr, textStatus, errorMessage) {
+								   console.log("Error" + errorMessage);
+							}
+							});
+					}
+					
 					$( document ).ready(function() {
+						
+						if($("#idprod").length>0)
+						{
+							$("#idprod").on("change", function(){
+								Product_extra_vals();
+							});
+						}
+						
 						var tablelin = $("#tablelines");
 						var trlin =';
 						if($num == 0)
@@ -704,12 +755,12 @@ class ActionsCategoriaRelas
 	public function formObjectOptions(&$parameters, &$object, &$action, $fromhere = "N")
 	{
 		global $db, $id;
-
+		//return;
 		if(date("Y-m-d") >= "2021-11-13")
 		{
 			return;
 		}
-
+		
 		if(in_array($parameters['currentcontext'], array('productcard')) || $fromhere=="Y")
 		{
 			$it = "";
@@ -986,16 +1037,16 @@ class ActionsCategoriaRelas
 							{
 								$script .= 'var rowp = $("#note_private").parent().parent().index();
 
-								swap_position($(rowt).index()+1, rowp-2)
-								swap_position($(rowm).index()+1, rowp-2)
+								swap_position($(rowt).index()+1, rowp-1);
+								swap_position($(rowm).index()+1, rowp-2);
 								';
 							}
 							else
 							{
 								$script .= 'var rowp = $("#categories").parent().parent().index();
 
-								swap_position($(rowt).index(), rowp-2)
-								swap_position($(rowm).index(), rowp-2)
+								swap_position($(rowt).index(), rowp-1);
+								//swap_position($(rowm).index(), rowp-2);
 
 								';
 

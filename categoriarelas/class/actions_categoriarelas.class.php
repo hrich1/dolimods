@@ -294,6 +294,7 @@ class ActionsCategoriaRelas
 									var valb = labes_ex[idv] != undefined ? labes_ex[idv][0] : "0";
 									//console.log($(trb).attr("data-id"));
 									var td1_ = document.createElement("td");
+									td1_.setAttribute("id", "td_matc");
 									td1_.innerHTML = valb;
 									trb.append(td1_);
 
@@ -333,10 +334,13 @@ class ActionsCategoriaRelas
 							}
 							else
 							{
+								if($object->status == $object::STATUS_DRAFT)
+								{
 								$script.='	var linestr  = trblin.length; trblin[linestr-1].append(td2_);
 											inp.setAttribute("value", valb);
 											td2_.append(inp);
 											';
+								}
 							}
 							
 							$clad = "liste_titre_create";
@@ -439,20 +443,43 @@ class ActionsCategoriaRelas
 									//var valb = labes_ex[idv] != undefined ? labes_ex[idv][1] : "-";
 									//console.log($(trb).attr("data-id"));
 									var td1_ = document.createElement("td");
+									td1_.setAttribute("id", "td_mate");
 									if(valb == "-")
 										td1_.setAttribute("align", "center");
 									td1_.innerHTML = valb;
 									trb.append(td1_);
 
 								}
+							}';
+							
+							if($object->status != $object::STATUS_DRAFT)
+							{
+								$clan = "from-6";
+								$script .= '
+								var from = ($("#td2_pzs").index());';
 							}
-
-							$.moveColumn(tablelin, from, '.$clan.', "oddeven", "=");
-							//===========>Para cada línea ya agregada
-
-
-
-							//=======Para la línea a crear
+							
+							$script .= '$.moveColumn(tablelin, from, '.$clan.', "oddeven", "=");
+							//===========>Para cada línea ya agregada';
+							
+							if($object->status != $object::STATUS_DRAFT)
+							{
+								$clan = "from-8";
+								$clin = "trclin";
+								$script .= '
+								var from = ($("#td_mate").index());
+								$.moveColumn(tablelin, from, '.$clan.', "oddeven", "=");
+								
+								var from = ($("#td_matc").index());';
+								$clan = "from-6";
+								$script .= '
+								$.moveColumn(tablelin, from, '.$clan.', "oddeven", "=");
+								';
+								
+								
+							}
+							
+							$script .= '//=======Para la línea a crear
 								
 								var td2_ = document.createElement("td");
 								td2_.setAttribute("id", "td_materie");

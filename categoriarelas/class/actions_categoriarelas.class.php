@@ -98,7 +98,8 @@ class ActionsCategoriaRelas
 
 		 //print_r($parameters); /*print_r($object); echo "action: " . $action;*/
 		if (in_array($parameters['currentcontext'], array('bomcard'))) {	    // do something only for the context
-
+			
+			$conf->global->PRODUIT_USE_SEARCH_TO_SELECT = 1;
 			$objprod = new Product($db);
 			$objprod->type = 0; // so test later to fill $usercancxxx is correct
 			$extrafieldsp = new ExtraFields($db);
@@ -106,9 +107,19 @@ class ActionsCategoriaRelas
 			$extrafieldsp->fetch_name_optionals_label($objprod->table_element);
 			$fieldsp =  $objprod->showOptionals($extrafieldsp, 'create', '');
 			
-			//echo "<pre>";
-			//print_r($extrafieldsp);
+			/*echo "<pre>";
+			print_r($extrafieldsp);
+			exit;*/
+			
+			$labels = $extrafieldsp->attribute_label;
+			//print_r($labels);
 			//exit;
+			$xtra_camps = array();
+			foreach($labels as $key => $valor)
+			{
+				$xtra_camps[] = $key;
+			}
+			
 			$fieldsp = str_replace("$(document).ready(function () {", "$(\"#campspro\").on('click', function() {", $fieldsp);
 
 			$fieldsp = str_replace("</select>", "</select><br/><br/>", $fieldsp);
@@ -134,10 +145,11 @@ class ActionsCategoriaRelas
 				}
 			}
 			$linesb_x = json_encode($linesb);
-
+			$xtra_camps = json_encode($xtra_camps);
 			$script = '
 				<script>
 					var labes_ex ='.$linesb_x . ';
+					var xtra_camps ='.$xtra_camps. ';
 					//console.log(labes_ex);
 					$.moveColumn = function (table, from, to, spec = "", comp = "=") {
 						var rows = $("tr", table);
@@ -232,6 +244,213 @@ class ActionsCategoriaRelas
 					}
 					
 					$( document ).ready(function() {
+						
+						
+						// auto show attributes fields
+						selected = [];
+						combvalues = {};
+	
+					
+						var firtone = true;
+						Filter_relas = function()
+						{
+							var valx = "";
+							var cv = 0;
+							for(var xt of xtra_camps)
+							{
+								
+								if($("#options_"+xt).length > 0)
+								{
+									if($("#options_"+xt).is(":visible") && $("#options_"+xt).val() !=""  && $("#options_"+xt).val() != 0)
+									{
+										
+										if(cv>0)
+											valx += "|";
+										valx += xt+"@@"+$("#options_"+xt).val();
+										cv++;
+									}
+								}
+							}
+							
+							console.log($("#valss").val()+"====="+valx);
+							if($("#valss").val()!= valx )
+							{
+								
+								$("#valss").val(valx);
+								$("#wheref").val("#valss");
+								
+								if($("#search_idprod2").val()=="")
+									firtone = true;
+								
+								if(firtone)
+									$("#search_idprod2").val(" ");
+								$("#search_idprod2").trigger("keydown");
+								
+								
+							}
+						}
+						
+						if($(".prod_entry_mode_predef").length > 0)
+						{
+						$(".prod_entry_mode_predef").prepend("<input readonly type=\"hidden\" id = \"wheref\" /><input type=\"text\" id = \"search_idprod2\" /><input type=\"hidden\" id = \"valss\" />");
+						
+						}
+							
+						/*$("#search_idprodt").on("keydown", function(){
+							$("#wheref").val("#search_idprodt");
+							console.log("moii");
+							$("#search_idprod2").trigger("keydown");
+						});*/
+						
+						setTimeout(function(){
+							
+							$("#search_idprod").hide();
+							var autoselect = 1;
+							var options = []; /* Option of actions to do after keyup, or after select */
+						$("input#search_idprod2").autocomplete({
+							source: function( request, response ) {
+								var deb = "";
+								if($("#wheref").val()=="#valss")
+								{
+									deb = "&fke=YES";
+									if(firtone)
+									{
+										$("#search_idprod2").val("");
+										firtone = false; 
+									}
+								}
+								else
+								{
+									deb = "&fke=NO";
+									$("#wheref").val("#search_idprod2");
+								}
+								$.get("../custom/categoriarelas/ajax/products.php?htmlname=idprod&outjson=1&price_level=0&type=&mode=1&status=-1&finished=2&hidepriceinlabel=0&warehousestatus=&idprod="+$($("#wheref").val()).val()+deb, function(data){
+									$("#wheref").val("");
+									if (data != null)
+									{
+										response($.map( data, function(item) {
+											if (autoselect == 1 && data.length == 1) {
+												$("#search_idprod").val(item.value);
+												$("#idprod").val(item.key).trigger("change");
+											}
+											var label = item.label.toString();
+											var update = {};
+											if (options.update) {
+												$.each(options.update, function(key, value) {
+													update[key] = item[value];
+												});
+											}
+											var textarea = {};
+											if (options.update_textarea) {
+												$.each(options.update_textarea, function(key, value) {
+													textarea[key] = item[value];
+												});
+											}
+											return { label: label, value: item.value, id: item.key, disabled: item.disabled,
+													 update: update, textarea: textarea,
+													 pbq: item.pbq,
+													 type: item.type, qty: item.qty, discount: item.discount,
+													 pricebasetype: item.pricebasetype,
+													 price_ht: item.price_ht,
+													 price_ttc: item.price_ttc,
+													 description : item.description,
+													 ref_customer: item.ref_customer }
+										}));
+									}
+									else console.error("Error: Ajax url ../custom/categoriarelas/ajax/products.php?htmlname=idprod&outjson=1&price_level=0&type=&mode=1&status=-1&finished=2&hidepriceinlabel=0&warehousestatus= has returned an empty page. Should be an empty json array.");
+								}, "json");
+							},
+							dataType: "json",
+							minLength: 1,
+							select: function( event, ui ) {		// Function ran once new value has been selected into javascript combo
+								console.log("We will trigger change on input idprod because of the select definition of autocomplete code for input#search_idprod");
+								console.log("Selected id = "+ui.item.id+" - If this value is null, it means you select a record with key that is null so selection is not effective");
+						
+								console.log("Propagate before some properties retrieved by ajax into data-xxx properties");
+						
+								// For supplier price and customer when price by quantity is off
+								$("#idprod").attr("data-up", ui.item.price_ht);
+								$("#idprod").attr("data-base", ui.item.pricebasetype);
+								$("#idprod").attr("data-qty", ui.item.qty);
+								$("#idprod").attr("data-discount", ui.item.discount);
+								$("#idprod").attr("data-description", ui.item.description);
+								$("#idprod").attr("data-ref-customer", ui.item.ref_customer);
+						
+								$("#idprod").val(ui.item.id).trigger("change");	// Select new value
+						
+								// Disable an element
+								if (options.option_disabled) {
+									console.log("Make action option_disabled on #"+options.option_disabled+" with disabled="+ui.item.disabled)
+									if (ui.item.disabled) {
+										$("#" + options.option_disabled).prop("disabled", true);
+										if (options.error) {
+											$.jnotify(options.error, "error", true);		// Output with jnotify the error message
+										}
+										if (options.warning) {
+											$.jnotify(options.warning, "warning", false);		// Output with jnotify the warning message
+										}
+									} else {
+										$("#" + options.option_disabled).removeAttr("disabled");
+									}
+								}
+						
+								if (options.disabled) {
+									console.log("Make action disabled on each "+options.option_disabled)
+									$.each(options.disabled, function(key, value) {
+										$("#" + value).prop("disabled", true);
+									});
+								}
+								if (options.show) {
+									console.log("Make action show on each "+options.show)
+									$.each(options.show, function(key, value) {
+										$("#" + value).show().trigger("show");
+									});
+								}
+						
+								// Update an input
+								if (ui.item.update) {
+									console.log("Make action update on each ui.item.update")
+									// loop on each "update" fields
+									$.each(ui.item.update, function(key, value) {
+										console.log("Set value "+value+" into #"+key);
+										$("#" + key).val(value).trigger("change");
+									});
+								}
+								if (ui.item.textarea) {
+									console.log("Make action textarea on each ui.item.textarea")
+									$.each(ui.item.textarea, function(key, value) {
+										if (typeof CKEDITOR == "object" && typeof CKEDITOR.instances != "undefined" && CKEDITOR.instances[key] != "undefined") {
+											CKEDITOR.instances[key].setData(value);
+											CKEDITOR.instances[key].focus();
+										} else {
+											$("#" + key).html(value);
+											$("#" + key).focus();
+										}
+									});
+								}
+								console.log("ajax_autocompleter new value selected, we trigger change also on original component so on field #search_idprod");
+						
+								$("#search_idprod").trigger("change");	// We have changed value of the combo select, we must be sure to trigger all js hook binded on this event. This is required to trigger other javascript change method binded on original field by other code.
+							}
+							,delay: 500
+						}).data("ui-autocomplete")._renderItem = function( ul, item ) {
+							return $("<li>")
+							.data( "ui-autocomplete-item", item ) // jQuery UI > 1.10.0
+							.append( \'<a><span class="tag">\' + item.label + "</span></a>" )
+							.appendTo(ul);
+						};
+						
+						;}, 500);
+						
+						
+						setInterval(function(){ Filter_relas();  }, 1000);
+						
+						
+						
+						
+						
+						
+						
 						
 						if($("#idprod").length>0)
 						{
@@ -777,6 +996,8 @@ class ActionsCategoriaRelas
 			}
 		}
 	}
+	
+	
 
 	/* Add here any other hooked methods... */
 	public function formObjectOptions(&$parameters, &$object, &$action, $fromhere = "N")
@@ -785,7 +1006,7 @@ class ActionsCategoriaRelas
 		//return;
 		if(date("Y-m-d") >= "2021-11-13")
 		{
-			return;
+			//return;
 		}
 		
 		if(in_array($parameters['currentcontext'], array('productcard')) || $fromhere=="Y")
